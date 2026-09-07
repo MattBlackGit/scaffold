@@ -1,3 +1,9 @@
+# Local dependency and test artifacts
+/vendor/
+/composer.lock
+/.phpunit.cache/
+/.phpunit.result.cache
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
