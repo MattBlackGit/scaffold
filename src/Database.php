@@ -1,17 +1,15 @@
 <?php
 namespace Ngaje\Scaffold;
 
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Proxy\AbstractProxyFactory;
-use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
-use Doctrine\ORM\Mapping\Driver\AttributeDriver;
-use Ngaje\Scaffold\Doctrine\AttributeOrAnnotationDriver;
 
 class Database extends \PDO
 {
     private $dev_mode = true;
+    private $doctrine_cache = null;
     private $jloader_unreg = false;
 
     private $host = 'localhost';
@@ -56,6 +54,29 @@ class Database extends \PDO
     public function setDevMode($value, $set_cache = true, $cache = 'memcached')
     {
         $this->dev_mode = $value ? true : false;
+        if ($set_cache) {
+            $this->setDoctrineCache($value ? 'array' : $cache);
+        }
+    }
+
+    public function setDoctrineCache($value)
+    {
+        switch ($value) {
+            /*case 'memcached':
+                $this->doctrine_cache = new \Doctrine\Common\Cache\MemcachedCache();
+                break;
+            case 'apc':
+                $this->doctrine_cache = new \Doctrine\Common\Cache\ApcCache();
+                break;
+            case 'redis':
+                $this->doctrine_cache = new \Doctrine\Common\Cache\RedisCache();
+                break;*/
+            default:
+            case 'array':
+                $this->doctrine_cache = new \Doctrine\Common\Cache\ArrayCache();
+                break;
+        }
+
         if (isset($this->entity_manager)) {
             $this->restartDoctrine();
         }
@@ -73,20 +94,14 @@ class Database extends \PDO
                 }
             }
 
-            // Set up Doctrine with a mixed driver so mappings can move from
-            // annotations to attributes one entity at a time.
-            $doctrine_config = new Configuration();
-            $doctrine_config->setProxyDir(sys_get_temp_dir());
-            $doctrine_config->setProxyNamespace('DoctrineProxies');
-            $doctrine_config->setMetadataDriverImpl(new AttributeOrAnnotationDriver(
-                new AttributeDriver(array($this->path_to_entities)),
-                new AnnotationDriver(new AnnotationReader(), array($this->path_to_entities))
-            ));
+            //Set up Doctrine
+            $doctrine_config = Setup::createAnnotationMetadataConfiguration(array($this->path_to_entities), $this->dev_mode, null, $this->doctrine_cache);
             if ($this->dev_mode) {
                 $doctrine_config->setAutoGenerateProxyClasses(true);
             } else {
                 $doctrine_config->setAutoGenerateProxyClasses(AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
             }
+            $doctrine_config->setEntityNamespaces(array($this->entity_namespace));
 
             $doctrine_conn = array('pdo' => $this);
             $this->entity_manager = EntityManager::create($doctrine_conn, $doctrine_config);
