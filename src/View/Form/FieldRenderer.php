@@ -132,7 +132,7 @@ class FieldRenderer
             $elem_id = 'help_' . $this->field->id;
             ?>
             <a id="help_link_<?php echo $this->field->id; ?>" class="help-link-<?php echo $this->field->type; ?>" title="<?php echo $this->language->global['help']; ?>" href="javascript:void(0);" onclick="$('#<?php echo $elem_id; ?>').slideToggle(400);this.blur();return false;"><?php
-                ?><img src="<?php echo $this->language->routing['bare_entry_url']; ?>&resource=image&id=help.png" border="0" alt="<?php echo $this->language->global['help']; ?>" /><?php
+                ?><img src="<?php echo $this->language->routing['bare_entry_url']; ?>&resource=image&id=help.png" alt="<?php echo $this->language->global['help']; ?>" style="width: 25px; height: 25px; border: 0;" /><?php
             ?></a>
 
             <div class="help-text field-help-text fld-<?php echo $this->field->type; ?> <?php echo $this->field->css_class; ?>"<?php $this->outputId('help'); ?> style="display:none;"><?php
