@@ -95,7 +95,7 @@ class FormRenderer
     public function renderMessage()
     {
         ?>
-        <div class="system-message <?php echo $this->form->css_class; ?>-message" id="system_message"><div id="system_message_close"><a href="javascript:void(0);" title="<?php echo $this->form->getString('close', 'global'); ?>" onclick="document.getElementById('system_message').style.display='none';return false;"><img src="<?php echo $this->form->getString('bare_entry_url', 'routing'); ?>&resource=image&id=close.png" alt="<?php echo $this->form->getString('close', 'global'); ?>" /></a></div><?php echo $this->form->message; ?></div>
+        <div class="system-message <?php echo $this->form->css_class; ?>-message" id="system_message"><div id="system_message_close"><a href="javascript:void(0);" title="<?php echo $this->form->getString('close', 'global'); ?>" onclick="document.getElementById('system_message').style.display='none';return false;"><img src="<?php echo $this->form->getString('bare_entry_url', 'routing'); ?>&resource=image&id=close_green.png" alt="<?php echo $this->form->getString('close', 'global'); ?>" /></a></div><?php echo $this->form->message; ?></div>
         <?php
     }
 
